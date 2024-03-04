@@ -81,7 +81,7 @@
         SCROLL BUTTON START
     ==============================-->
     <div class="fp__scroll_btn">
-        go to top
+        <i class="fa fa-arrow-left"></i>
     </div>
     <!--=============================
         SCROLL BUTTON END

@@ -50,6 +50,21 @@
     <!-- Template JS File -->
     <script src="{{ asset('backend/assets/js/scripts.js') }}"></script>
     <script src="{{ asset('backend/assets/js/custom.js') }}"></script>
+    <script src="{{ asset('backend/assets/modules/upload-preview/assets/js/jquery.uploadPreview.min.js') }}"></script>
+
+    <script>
+        $.uploadPreview({
+            input_field: "#image-upload",
+            preview_box: "#image-preview",
+            label_field: "#image-label",
+            label_default: "Chọn Ảnh",
+            label_selelcted: "Đổi Ảnh",
+            no_label: false,
+            success_callback: null
+        })
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>
