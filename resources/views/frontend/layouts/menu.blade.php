@@ -64,7 +64,9 @@
                 <li>
                     @if (Auth::check())
                         <a href="{{ route('profile') }}">
-                            <img src="{{ Auth::user()->avatar }}" style="width: 40px !important; border-radius:50%" />
+                            <img src="{{ Auth::user()->avatar }}"
+                                style="width: 40px !important;height:40px !important; border-radius:50%"
+                                id="hd_img" />
                         </a>
                     @else
                         <a href="{{ route('login') }}"><i class="fas fa-user"></i></a>

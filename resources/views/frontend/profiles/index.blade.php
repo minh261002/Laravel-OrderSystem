@@ -9,9 +9,12 @@
                         <div class="fp__dashboard_menu">
                             <div class="dasboard_header">
                                 <div class="dasboard_header_img">
-                                    <img src="{{ Auth::user()->avatar }}" alt="user" class="img-fluid w-100">
+                                    <img src="{{ Auth::user()->avatar }}" alt="user" id="pf_img"
+                                        class="img-fluid w-100">
                                     <label for="upload"><i class="far fa-camera"></i></label>
-                                    <input type="file" id="upload" hidden>
+                                    <form id="avatar_form">
+                                        <input type="file" id="upload" hidden name="avatar">
+                                    </form>
                                 </div>
                                 <h2>{{ Auth::user()->name }}</h2>
                             </div>
@@ -97,47 +100,48 @@
                                         </div>
 
                                         <div class="fp_dash_personal_info">
-                                            <h4>Thông Tin Cá Nhân
+                                            <h4>
+                                                Thông Tin Cá Nhân
                                                 <a class="dash_info_btn">
                                                     <span class="edit">Chỉnh Sửa</span>
                                                     <span class="cancel">Quay Lại</span>
                                                 </a>
                                             </h4>
 
+                                            @if (session('success'))
+                                                <div class="alert alert-success mt-2">
+                                                    {{ session('success') }}
+                                                </div>
+                                            @endif
+
                                             <div class="personal_info_text">
                                                 <p><span>Họ Và Tên:</span> {{ Auth::user()->name }}</p>
                                                 <p><span>Email:</span> {{ Auth::user()->email }}</p>
-                                                <p><span>Điện Thoại:</span> 023 434 54354</p>
-                                                <p><span>Địa Chỉ:</span> 178 Điện Biên Phủ, Phường 22, Quận Bình Thạnh,
-                                                    TP.Hồ Chí Minh </p>
                                             </div>
 
                                             <div class="fp_dash_personal_info_edit comment_input p-0">
-                                                <form>
+                                                <form action="{{ route('profile.update') }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="fp__comment_imput_single">
                                                                 <label>Họ Và Tên</label>
-                                                                <input type="text" name="name" id="name">
+                                                                <input type="text" name="name" id="name"
+                                                                    value="{{ auth()->user()->name }}">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xl-6 col-lg-6">
+
+                                                        <div class="col-12">
                                                             <div class="fp__comment_imput_single">
                                                                 <label>Email</label>
-                                                                <input type="email" name="email" id="email">
+                                                                <input type="email" name="email" id="email"
+                                                                    value="{{ auth()->user()->email }}">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xl-6 col-lg-6">
-                                                            <div class="fp__comment_imput_single">
-                                                                <label>Điện THoại</label>
-                                                                <input type="text" name="phone" id="phone">
-                                                            </div>
-                                                        </div>
+
                                                         <div class="col-xl-12">
-                                                            <div class="fp__comment_imput_single">
-                                                                <label>address</label>
-                                                                <textarea rows="4" placeholder="Address"></textarea>
-                                                            </div>
                                                             <button type="submit" class="common_btn">Lưu Thay
                                                                 Đổi</button>
                                                         </div>
@@ -1134,40 +1138,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
-                                    aria-labelledby="v-pills-settings-tab">
-                                    <div class="fp_dashboard_body fp__change_password">
-                                        <div class="fp__review_input">
-                                            <h3>change password</h3>
-                                            <div class="comment_input pt-0">
-                                                <form>
-                                                    <div class="row">
-                                                        <div class="col-xl-6">
-                                                            <div class="fp__comment_imput_single">
-                                                                <label>Current Password</label>
-                                                                <input type="password" placeholder="Current Password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xl-6">
-                                                            <div class="fp__comment_imput_single">
-                                                                <label>New Password</label>
-                                                                <input type="password" placeholder="New Password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xl-12">
-                                                            <div class="fp__comment_imput_single">
-                                                                <label>confirm Password</label>
-                                                                <input type="password" placeholder="Confirm Password">
-                                                            </div>
-                                                            <button type="submit"
-                                                                class="common_btn mt_20">submit</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @include('frontend.profiles.change-password')
 
                             </div>
                         </div>
@@ -1177,3 +1148,34 @@
         </div>
     </section>
 @endsection
+
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#upload').on('change', function() {
+                let form = $('#avatar_form')[0];
+                let formData = new FormData(form);
+
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('profile.update.avatar') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#pf_img').attr('src', response.avatar_url);
+                            $('#hd_img').attr('src', response.avatar_url);
+                        } else {
+                            console.error("Upload failed.");
+                        }
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function(){
 
     Route::prefix('profile')->group(function(){
         Route::get('', [ProfileController::class, 'index'])->name('profile');
+        Route::put('', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('password', [ProfileController::class, 'password'])->name('profile.update.password');
+        Route::post('avatar', [ProfileController::class, 'avatar'])->name('profile.update.avatar');
     });
 
 });
